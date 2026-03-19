@@ -8,6 +8,7 @@ import com.myawesome.kotlinpa2026.data.api.dto.PostDto
 import com.myawesome.kotlinpa2026.data.repository.DiaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -39,11 +40,9 @@ class PostViewViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             runCatching {
-                val postsDeferred = async { repository.getPosts(limit = 200) }
+                val postDeferred = async { repository.getPost(postId) }
                 val labelsDeferred = async { repository.getLabels() }
-                val posts = postsDeferred.await()
-                val labels = labelsDeferred.await()
-                Pair(posts.find { it.id == postId }, labels)
+                Pair(postDeferred.await(), labelsDeferred.await())
             }.onSuccess { (post, labels) ->
                 _uiState.value = _uiState.value.copy(
                     post = post,

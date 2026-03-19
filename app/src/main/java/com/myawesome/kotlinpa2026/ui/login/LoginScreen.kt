@@ -36,6 +36,20 @@ fun LoginScreen(
         Spacer(Modifier.height(32.dp))
 
         OutlinedTextField(
+            value = state.serverUrl,
+            onValueChange = vm::onServerUrlChange,
+            label = { Text("Server URL") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
             value = state.email,
             onValueChange = vm::onEmailChange,
             label = { Text("Email") },

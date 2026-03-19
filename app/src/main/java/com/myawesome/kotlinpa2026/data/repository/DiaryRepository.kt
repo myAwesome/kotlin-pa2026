@@ -27,9 +27,11 @@ class DiaryRepository @Inject constructor(
     suspend fun getPosts(limit: Int = 50): List<PostDto> =
         api.getPosts(limit = limit).data
 
+    suspend fun getPost(id: Int): PostDto = api.getPost(id)
+
     suspend fun createPost(body: String, date: LocalDate): PostDto {
-        val formatted = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-            .replace("T", " ")
+        val formatted = date.atStartOfDay()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         return api.createPost(CreatePostRequest(body = body, date = formatted))
     }
 
