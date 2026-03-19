@@ -3,6 +3,7 @@ package com.myawesome.kotlinpa2026.ui.onthisday
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myawesome.kotlinpa2026.data.api.dto.PostDto
+import com.myawesome.kotlinpa2026.data.local.SelectedPostStore
 import com.myawesome.kotlinpa2026.data.repository.DiaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,8 @@ data class OnThisDayUiState(
 
 @HiltViewModel
 class OnThisDayViewModel @Inject constructor(
-    private val repository: DiaryRepository
+    private val repository: DiaryRepository,
+    private val selectedPostStore: SelectedPostStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnThisDayUiState())
@@ -29,6 +31,8 @@ class OnThisDayViewModel @Inject constructor(
     init {
         load()
     }
+
+    fun selectPost(post: PostDto) = selectedPostStore.setPost(post)
 
     fun load() {
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)

@@ -14,7 +14,9 @@ data class CommentDto(
 @JsonClass(generateAdapter = true)
 data class PeriodDto(
     val id: Int,
-    val name: String
+    val name: String,
+    val start: String?,
+    val end: String?
 )
 
 @JsonClass(generateAdapter = true)

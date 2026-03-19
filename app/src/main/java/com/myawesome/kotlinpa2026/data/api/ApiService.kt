@@ -17,9 +17,6 @@ interface ApiService {
     @POST("posts")
     suspend fun createPost(@Body post: CreatePostRequest): PostDto
 
-    @GET("posts/{id}")
-    suspend fun getPost(@Path("id") id: Int): PostDto
-
     @PATCH("posts/{id}")
     suspend fun updatePost(
         @Path("id") id: Int,

@@ -58,7 +58,7 @@ fun PostListScreen(
 
             else -> LazyColumn(contentPadding = padding) {
                 items(state.posts) { post ->
-                    PostItem(post = post, onClick = { onPostClick(post.id) })
+                    PostItem(post = post, onClick = { vm.selectPost(post); onPostClick(post.id) })
                     HorizontalDivider()
                 }
             }

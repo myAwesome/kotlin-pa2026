@@ -67,7 +67,7 @@ fun SearchScreen(
                             supportingContent = {
                                 Text(post.body, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             },
-                            modifier = Modifier.clickable { onPostClick(post.id) }
+                            modifier = Modifier.clickable { vm.selectPost(post); onPostClick(post.id) }
                         )
                         HorizontalDivider()
                     }
