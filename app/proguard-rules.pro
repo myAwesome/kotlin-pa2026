@@ -1,0 +1,1 @@
+-keep class com.myawesome.kotlinpa2026.data.api.dto.** { *; }
