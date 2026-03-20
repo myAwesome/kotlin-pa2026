@@ -12,10 +12,12 @@ import com.myawesome.kotlinpa2026.ui.months.MonthListScreen
 import com.myawesome.kotlinpa2026.ui.onthisday.OnThisDayScreen
 import com.myawesome.kotlinpa2026.ui.post.PostViewScreen
 import com.myawesome.kotlinpa2026.ui.posts.PostListScreen
+import com.myawesome.kotlinpa2026.ui.recentposts.RecentPostsScreen
 import com.myawesome.kotlinpa2026.ui.search.SearchScreen
 
 object Routes {
     const val LOGIN = "login"
+    const val RECENT_POSTS = "recent"
     const val MONTHS = "months"
     const val POSTS = "posts/{ym}"
     const val POST_VIEW = "post/{id}"
@@ -37,10 +39,20 @@ fun AppNavGraph() {
 
         composable(Routes.LOGIN) {
             LoginScreen(onLoginSuccess = {
-                navController.navigate(Routes.MONTHS) {
+                navController.navigate(Routes.RECENT_POSTS) {
                     popUpTo(Routes.LOGIN) { inclusive = true }
                 }
             })
+        }
+
+        composable(Routes.RECENT_POSTS) {
+            RecentPostsScreen(
+                onPostClick = { id -> navController.navigate(Routes.postView(id)) },
+                onSearchClick = { navController.navigate(Routes.SEARCH) },
+                onOnThisDayClick = { navController.navigate(Routes.ON_THIS_DAY) },
+                onMonthsClick = { navController.navigate(Routes.MONTHS) },
+                onNewPostClick = { navController.navigate(Routes.POST_NEW) }
+            )
         }
 
         composable(Routes.MONTHS) {
