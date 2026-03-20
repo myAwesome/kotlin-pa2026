@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 private val Context.configDataStore by preferencesDataStore(name = "config")
 
-private const val DEFAULT_BASE_URL = "https://p2021.solop.cc/api/"
+private const val DEFAULT_BASE_URL = "https://pa2021.solop.cc/api/"
 
 @Singleton
 class ConfigStore @Inject constructor(
