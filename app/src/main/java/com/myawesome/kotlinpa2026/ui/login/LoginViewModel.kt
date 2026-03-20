@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
         _uiState.value = state.copy(isLoading = true, error = null)
         viewModelScope.launch {
             runCatching {
-                configStore.saveBaseUrl(state.serverUrl.trimEnd('/'))
+                configStore.saveBaseUrl(state.serverUrl.trimEnd('/') + "/")
                 repository.login(state.email.trim(), state.password)
             }.onSuccess {
                 onSuccess()
