@@ -12,9 +12,14 @@ import javax.inject.Inject
 
 data class MonthListUiState(
     val months: List<MonthEntryDto> = emptyList(),
+    val selectedYear: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
-)
+) {
+    val years: List<String> get() = months.map { it.year }.distinct().sortedDescending()
+    val monthsForSelectedYear: List<MonthEntryDto> get() =
+        months.filter { it.year == selectedYear }
+}
 
 @HiltViewModel
 class MonthListViewModel @Inject constructor(
@@ -42,5 +47,13 @@ class MonthListViewModel @Inject constructor(
                     )
                 }
         }
+    }
+
+    fun selectYear(year: String) {
+        _uiState.value = _uiState.value.copy(selectedYear = year)
+    }
+
+    fun clearYear() {
+        _uiState.value = _uiState.value.copy(selectedYear = null)
     }
 }
