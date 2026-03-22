@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -59,6 +60,11 @@ fun PostViewScreen(
             state.post != null -> PostContent(
                 post = state.post!!,
                 labels = state.labels,
+                commentInput = state.commentInput,
+                isSubmittingComment = state.isSubmittingComment,
+                commentError = state.commentError,
+                onCommentInputChange = vm::onCommentInputChange,
+                onSubmitComment = vm::submitComment,
                 modifier = Modifier.padding(padding)
             )
         }
@@ -69,6 +75,11 @@ fun PostViewScreen(
 private fun PostContent(
     post: PostDto,
     labels: List<LabelDto>,
+    commentInput: String,
+    isSubmittingComment: Boolean,
+    commentError: String?,
+    onCommentInputChange: (String) -> Unit,
+    onSubmitComment: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -99,12 +110,55 @@ private fun PostContent(
             }
         }
 
-        if (post.comments.isNotEmpty()) {
-            HorizontalDivider()
-            Text("Comments", style = MaterialTheme.typography.titleSmall)
-            post.comments.forEach { comment ->
-                CommentItem(comment)
-            }
+        HorizontalDivider()
+        Text("Comments", style = MaterialTheme.typography.titleSmall)
+
+        post.comments.forEach { comment ->
+            CommentItem(comment)
+        }
+
+        CommentInput(
+            value = commentInput,
+            isSubmitting = isSubmittingComment,
+            error = commentError,
+            onValueChange = onCommentInputChange,
+            onSubmit = onSubmitComment
+        )
+    }
+}
+
+@Composable
+private fun CommentInput(
+    value: String,
+    isSubmitting: Boolean,
+    error: String?,
+    onValueChange: (String) -> Unit,
+    onSubmit: () -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Add a comment...") },
+            trailingIcon = {
+                if (isSubmitting) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                } else {
+                    IconButton(onClick = onSubmit, enabled = value.isNotBlank()) {
+                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                    }
+                }
+            },
+            isError = error != null,
+            maxLines = 4
+        )
+        if (error != null) {
+            Text(
+                error,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }

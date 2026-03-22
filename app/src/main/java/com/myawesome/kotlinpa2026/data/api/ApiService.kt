@@ -44,6 +44,9 @@ interface ApiService {
         @Query("md") md: String
     ): List<PostDto>
 
+    @POST("comments")
+    suspend fun createComment(@Body comment: CreateCommentRequest): CommentDto
+
     @GET("labels")
     suspend fun getLabels(
         @Query("\$limit") limit: Int = 100

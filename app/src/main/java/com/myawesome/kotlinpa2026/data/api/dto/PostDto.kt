@@ -40,3 +40,10 @@ data class CreatePostRequest(
     val body: String,
     val date: String
 )
+
+@JsonClass(generateAdapter = true)
+data class CreateCommentRequest(
+    val body: String,
+    @Json(name = "post_id") val postId: Int,
+    val date: String
+)
