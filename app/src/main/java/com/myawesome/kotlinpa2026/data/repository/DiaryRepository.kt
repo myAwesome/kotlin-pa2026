@@ -5,6 +5,7 @@ import com.myawesome.kotlinpa2026.data.api.dto.*
 import com.myawesome.kotlinpa2026.data.local.SessionStore
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,6 +48,12 @@ class DiaryRepository @Inject constructor(
     suspend fun getPostsByMonth(ym: String): List<PostDto> = api.getPostsByMonth(ym)
 
     suspend fun getOnThisDay(monthDay: String): List<PostDto> = api.getOnThisDay(monthDay)
+
+    suspend fun createComment(postId: Int, body: String): CommentDto {
+        val formatted = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        return api.createComment(CreateCommentRequest(body = body, postId = postId, date = formatted))
+    }
 
     suspend fun getLabels(): List<LabelDto> = api.getLabels().data
 }
