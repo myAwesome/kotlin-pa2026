@@ -32,7 +32,7 @@ object Routes {
 }
 
 @Composable
-fun AppNavGraph() {
+fun AppNavGraph(isDark: Boolean = false, onToggleTheme: () -> Unit = {}) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routes.LOGIN) {
@@ -51,7 +51,9 @@ fun AppNavGraph() {
                 onSearchClick = { navController.navigate(Routes.SEARCH) },
                 onOnThisDayClick = { navController.navigate(Routes.ON_THIS_DAY) },
                 onMonthsClick = { navController.navigate(Routes.MONTHS) },
-                onNewPostClick = { navController.navigate(Routes.POST_NEW) }
+                onNewPostClick = { navController.navigate(Routes.POST_NEW) },
+                isDark = isDark,
+                onToggleTheme = onToggleTheme
             )
         }
 

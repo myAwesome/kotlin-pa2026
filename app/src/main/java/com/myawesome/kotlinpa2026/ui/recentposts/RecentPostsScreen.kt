@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +30,8 @@ fun RecentPostsScreen(
     onOnThisDayClick: () -> Unit,
     onMonthsClick: () -> Unit,
     onNewPostClick: () -> Unit,
+    isDark: Boolean = false,
+    onToggleTheme: () -> Unit = {},
     vm: RecentPostsViewModel = hiltViewModel()
 ) {
     val state by vm.uiState.collectAsState()
@@ -37,6 +41,12 @@ fun RecentPostsScreen(
             TopAppBar(
                 title = { Text("Pa2026") },
                 actions = {
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = if (isDark) "Switch to light theme" else "Switch to dark theme"
+                        )
+                    }
                     IconButton(onClick = onOnThisDayClick) {
                         Icon(Icons.Default.DateRange, contentDescription = "On This Day")
                     }
