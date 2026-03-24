@@ -2,6 +2,7 @@ package com.myawesome.kotlinpa2026.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myawesome.kotlinpa2026.data.api.dto.LabelDto
 import com.myawesome.kotlinpa2026.data.api.dto.PostDto
 import com.myawesome.kotlinpa2026.data.local.SelectedPostStore
 import com.myawesome.kotlinpa2026.data.repository.DiaryRepository
@@ -16,6 +17,7 @@ import javax.inject.Inject
 data class SearchUiState(
     val query: String = "",
     val results: List<PostDto> = emptyList(),
+    val labels: List<LabelDto> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -29,6 +31,13 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState = _uiState.asStateFlow()
     private var searchJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            runCatching { repository.getLabels() }
+                .onSuccess { labels -> _uiState.value = _uiState.value.copy(labels = labels) }
+        }
+    }
 
     fun selectPost(post: PostDto) = selectedPostStore.setPost(post)
 
