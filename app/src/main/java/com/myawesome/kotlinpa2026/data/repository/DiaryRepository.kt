@@ -2,6 +2,7 @@ package com.myawesome.kotlinpa2026.data.repository
 
 import com.myawesome.kotlinpa2026.data.api.ApiService
 import com.myawesome.kotlinpa2026.data.api.dto.*
+import com.myawesome.kotlinpa2026.data.local.LabelStore
 import com.myawesome.kotlinpa2026.data.local.SessionStore
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
@@ -13,7 +14,8 @@ import javax.inject.Singleton
 @Singleton
 class DiaryRepository @Inject constructor(
     private val api: ApiService,
-    private val sessionStore: SessionStore
+    private val sessionStore: SessionStore,
+    private val labelStore: LabelStore
 ) {
     suspend fun login(email: String, password: String): String {
         val response = api.login(AuthRequest(email = email, password = password))
@@ -55,5 +57,10 @@ class DiaryRepository @Inject constructor(
         return api.createComment(CreateCommentRequest(body = body, postId = postId, date = formatted))
     }
 
-    suspend fun getLabels(): List<LabelDto> = api.getLabels().data
+    suspend fun getLabels(): List<LabelDto> {
+        if (labelStore.isLoaded()) return labelStore.labels.value
+        val labels = api.getLabels().data
+        labelStore.set(labels)
+        return labels
+    }
 }
