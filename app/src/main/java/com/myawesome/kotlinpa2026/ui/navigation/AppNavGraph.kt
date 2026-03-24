@@ -62,7 +62,8 @@ fun AppNavGraph(isDark: Boolean = false, onToggleTheme: () -> Unit = {}) {
                 onMonthClick = { ym -> navController.navigate(Routes.posts(ym)) },
                 onSearchClick = { navController.navigate(Routes.SEARCH) },
                 onOnThisDayClick = { navController.navigate(Routes.ON_THIS_DAY) },
-                onNewPostClick = { navController.navigate(Routes.POST_NEW) }
+                onNewPostClick = { navController.navigate(Routes.POST_NEW) },
+                onBack = { navController.popBackStack() }
             )
         }
 

@@ -12,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -56,17 +55,27 @@ fun SearchScreen(
                     Text("No results", Modifier.align(Alignment.Center))
                 else -> LazyColumn {
                     items(state.results) { post ->
+                        val postLabels = state.labels.filter { it.id in post.labels }
                         ListItem(
                             headlineContent = {
-                                Text(
-                                    post.date.take(10),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text(
+                                        post.date.take(10),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    postLabels.forEach { label ->
+                                        Text(
+                                            label.emoji ?: label.name.take(1),
+                                            style = MaterialTheme.typography.labelMedium
+                                        )
+                                    }
+                                }
                             },
-                            supportingContent = {
-                                Text(post.body, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            },
+                            supportingContent = { Text(post.body) },
                             modifier = Modifier.clickable { vm.selectPost(post); onPostClick(post.id) }
                         )
                         HorizontalDivider()

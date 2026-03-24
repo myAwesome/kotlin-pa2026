@@ -26,6 +26,7 @@ fun MonthListScreen(
     onSearchClick: () -> Unit,
     onOnThisDayClick: () -> Unit,
     onNewPostClick: () -> Unit,
+    onBack: () -> Unit,
     vm: MonthListViewModel = hiltViewModel()
 ) {
     val state by vm.uiState.collectAsState()
@@ -39,10 +40,10 @@ fun MonthListScreen(
             TopAppBar(
                 title = { Text(state.selectedYear ?: "Pa2026") },
                 navigationIcon = {
-                    if (state.selectedYear != null) {
-                        IconButton(onClick = vm::clearYear) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                        }
+                    IconButton(
+                        onClick = if (state.selectedYear != null) vm::clearYear else onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {

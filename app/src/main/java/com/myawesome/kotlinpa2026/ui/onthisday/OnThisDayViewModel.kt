@@ -2,6 +2,7 @@ package com.myawesome.kotlinpa2026.ui.onthisday
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myawesome.kotlinpa2026.data.api.dto.LabelDto
 import com.myawesome.kotlinpa2026.data.api.dto.PostDto
 import com.myawesome.kotlinpa2026.data.local.SelectedPostStore
 import com.myawesome.kotlinpa2026.data.repository.DiaryRepository
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 data class OnThisDayUiState(
     val posts: List<PostDto> = emptyList(),
+    val labels: List<LabelDto> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -39,9 +41,13 @@ class OnThisDayViewModel @Inject constructor(
         val today = LocalDate.now()
         val md = today.format(DateTimeFormatter.ofPattern("MM-dd"))
         viewModelScope.launch {
-            runCatching { repository.getOnThisDay(md) }
-                .onSuccess { posts ->
-                    _uiState.value = _uiState.value.copy(posts = posts, isLoading = false)
+            runCatching {
+                val posts = repository.getOnThisDay(md)
+                val labels = repository.getLabels()
+                posts to labels
+            }
+                .onSuccess { (posts, labels) ->
+                    _uiState.value = _uiState.value.copy(posts = posts, labels = labels, isLoading = false)
                 }
                 .onFailure { e ->
                     _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
