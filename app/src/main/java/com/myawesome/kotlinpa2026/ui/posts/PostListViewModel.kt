@@ -3,6 +3,7 @@ package com.myawesome.kotlinpa2026.ui.posts
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myawesome.kotlinpa2026.data.api.dto.LabelDto
 import com.myawesome.kotlinpa2026.data.api.dto.PostDto
 import com.myawesome.kotlinpa2026.data.local.SelectedPostStore
 import com.myawesome.kotlinpa2026.data.repository.DiaryRepository
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 data class PostListUiState(
     val posts: List<PostDto> = emptyList(),
+    val labels: List<LabelDto> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -39,9 +41,13 @@ class PostListViewModel @Inject constructor(
     fun load() {
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
-            runCatching { repository.getPostsByMonth(ym) }
-                .onSuccess { posts ->
-                    _uiState.value = _uiState.value.copy(posts = posts, isLoading = false)
+            runCatching {
+                val posts = repository.getPostsByMonth(ym)
+                val labels = repository.getLabels()
+                posts to labels
+            }
+                .onSuccess { (posts, labels) ->
+                    _uiState.value = _uiState.value.copy(posts = posts, labels = labels, isLoading = false)
                 }
                 .onFailure { e ->
                     _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)

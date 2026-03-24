@@ -12,9 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.myawesome.kotlinpa2026.data.api.dto.LabelDto
 import com.myawesome.kotlinpa2026.data.api.dto.PostDto
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +58,12 @@ fun PostListScreen(
 
             else -> LazyColumn(contentPadding = padding) {
                 items(state.posts) { post ->
-                    PostItem(post = post, onClick = { vm.selectPost(post); onPostClick(post.id) })
+                    val postLabels = state.labels.filter { it.id in post.labels }
+                    PostItem(
+                        post = post,
+                        labels = postLabels,
+                        onClick = { vm.selectPost(post); onPostClick(post.id) }
+                    )
                     HorizontalDivider()
                 }
             }
@@ -67,21 +72,28 @@ fun PostListScreen(
 }
 
 @Composable
-private fun PostItem(post: PostDto, onClick: () -> Unit) {
+private fun PostItem(post: PostDto, labels: List<LabelDto>, onClick: () -> Unit) {
     ListItem(
         headlineContent = {
-            Text(
-                post.date.take(10),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    post.date.take(10),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                labels.forEach { label ->
+                    Text(
+                        label.emoji ?: label.name.take(1),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
         },
         supportingContent = {
-            Text(
-                post.body,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(post.body)
         },
         modifier = Modifier.clickable(onClick = onClick)
     )

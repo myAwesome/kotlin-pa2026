@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 data class LabelDto(
     val id: Int,
     val name: String,
+    val emoji: String?,
     val color: String?,
     @Json(name = "color_active") val colorActive: String?
 )
